@@ -13,7 +13,7 @@ class CustomCarouselSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       options: CarouselOptions(
-        height: height !=null?height!+20: 250,
+        height: height != null ? height! + 20 : 250,
         autoPlay: false,
         enlargeCenterPage: false,
         enableInfiniteScroll: false,
@@ -58,13 +58,14 @@ class CustomCarouselSlider extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 images.length,
-                (index) =>  Padding(
+                (index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2.0),
                   child: SizedBox(
                     height: 7,
                     width: 7,
                     child: CircleAvatar(
-                      backgroundColor: (itemIndex==index)?redColor:secondaryColor,
+                      backgroundColor:
+                          (itemIndex == index) ? color3 : secondaryColor,
                     ),
                   ),
                 ),

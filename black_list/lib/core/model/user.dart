@@ -18,6 +18,7 @@ class UserModel {
       "name": name,
       "phone": phone,
       "email": email,
+      'profileImageUrl': image,
     };
   }
 }

@@ -1,12 +1,16 @@
 import 'package:black_list/screens/signup_screen.dart';
+import 'package:black_list/widgets/primary_button.dart';
 import 'package:black_list/widgets/text_input_field.dart';
 import 'package:flutter/material.dart';
 
+import '../core/service/auth_service.dart';
+import '../generated/l10n.dart';
 import '../utils/colors.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String routeName='/login';
+  static const String routeName = '/login';
+
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -14,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -41,42 +46,47 @@ class _LoginScreenState extends State<LoginScreen> {
               Image.asset("assets/images/black_list.png"),
               TextInputField(
                   textEditingController: _emailController,
-                  hintText: "Enter your email",
+                  hintText: S.of(context).enter_email,
                   textInputType: TextInputType.emailAddress),
               const SizedBox(
-                height: 24,
+                height: 10,
               ),
               TextInputField(
                 textEditingController: _passwordController,
-                hintText: "Enter your password",
+                hintText: S.of(context).enter_password,
                 textInputType: TextInputType.text,
                 isPass: true,
               ),
               const SizedBox(
-                height: 24,
+                height: 30,
               ),
-              InkWell(
-                child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4),
-                      ),
-                    ),
-                    color: blueColor,
-                  ),
-                  child: const Text("Log in"),
-                ),
-                onTap: (){
-                  Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-                },
-              ),
-              const SizedBox(
-                height: 24,
-              ),
+              PrimaryButton(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+                    _authService
+                        .login(_emailController.text, _passwordController.text)
+                        .then((value) {
+                      Navigator.pushReplacementNamed(
+                          context, HomeScreen.routeName);
+                    }).catchError((error) {
+                      // hide waiting dialog
+                      Navigator.pop(context);
+                      // show error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Login failed. Please try again.')),
+                      );
+                    });
+                  },
+                  caption: S.of(context).login),
               Flexible(
                 flex: 1,
                 child: Container(),
@@ -86,14 +96,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't you have an account? "),
+                    Text(
+                      S.of(context).Dont_have_account,
+                      style: const TextStyle(color: primaryColor),
+                    ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacementNamed(context, SignupScreen.routeName);
+                        Navigator.pushReplacementNamed(
+                            context, SignupScreen.routeName);
                       },
-                      child: const Text(
-                        "Sign up",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      child: Text(
+                        S.of(context).sign_up,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: color3),
                       ),
                     ),
                   ],
